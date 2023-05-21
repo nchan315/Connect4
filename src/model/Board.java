@@ -59,6 +59,18 @@ public class Board {
         return record;
     }
 
+    // EFFECTS: returns an array with columns that have empty spots
+    public List<Integer> getEmptySpots() {
+        List<Integer> empties = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            List<String> column = getColumn(i);
+            if (column.contains("*")) {
+                empties.add(i);
+            }
+        }
+        return empties;
+    }
+
     // MODIFIES: board
     // EFFECTS: given a column, adds the piece to board if possible
     public void addPiece(int col, String piece) throws InvalidColumnException, FullColumnException {

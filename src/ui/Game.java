@@ -1,6 +1,9 @@
 package ui;
 
 import model.Board;
+import model.EasyBot;
+import model.Person;
+import model.Player;
 import model.exceptions.FullColumnException;
 import model.exceptions.InvalidColumnException;
 
@@ -8,25 +11,16 @@ import java.util.Scanner;
 
 public class Game {
     private Board board = Board.getBoard();
-    private boolean gameOn = true;
+    private Player player1 = new Person("O");
+    private Player player2 = new EasyBot("X");
+
     private Scanner scanner = new Scanner(System.in);
+    private boolean gameOn = true;
 
     public Game() {
         while (gameOn) {
             board.printBoard();
-            int input1 = Integer.parseInt(scanner.nextLine()) - 1;
-            try {
-                board.addPiece(input1, "X");
-                board.printBoard();
-            } catch (InvalidColumnException e) {
-                System.out.println("Not a valid column");
-            } catch (FullColumnException e) {
-                System.out.println("Column already full");
-            }
-            if (board.win("X")) {
-                gameOn = false;
-                System.out.println("X has won!");
-            }
+            player1.move();
 
             int input2 = Integer.parseInt(scanner.nextLine()) - 1;
             try {
