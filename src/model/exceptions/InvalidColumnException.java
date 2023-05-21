@@ -1,2 +1,4 @@
-package model;public class InvalidColumnException {
+package model.exceptions;
+
+public class InvalidColumnException extends Exception {
 }

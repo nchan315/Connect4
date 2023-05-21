@@ -1,2 +1,4 @@
-package model;public class FullColumnException {
+package model.exceptions;
+
+public class FullColumnException extends Exception {
 }

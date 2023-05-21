@@ -1,2 +1,47 @@
-package ui;public class Game {
+package ui;
+
+import model.Board;
+import model.exceptions.FullColumnException;
+import model.exceptions.InvalidColumnException;
+
+import java.util.Scanner;
+
+public class Game {
+    private Board board = new Board();
+    private boolean gameOn = true;
+    private Scanner scanner = new Scanner(System.in);
+
+    public Game() {
+        board.printBoard();
+
+        while (gameOn) {
+            int input1 = Integer.parseInt(scanner.nextLine()) - 1;
+            try {
+                board.addPiece(input1, "X");
+                board.printBoard();
+            } catch (InvalidColumnException e) {
+                System.out.println("Not a valid column");
+            } catch (FullColumnException e) {
+                System.out.println("Column already full");
+            }
+            if (board.win("X")) {
+                gameOn = false;
+                System.out.println("X has won!");
+            }
+
+            int input2 = Integer.parseInt(scanner.nextLine()) - 1;
+            try {
+                board.addPiece(input2, "O");
+                board.printBoard();
+            } catch (InvalidColumnException e) {
+                System.out.println("Not a valid column");
+            } catch (FullColumnException e) {
+                System.out.println("Column already full");
+            }
+            if (board.win("O")) {
+                gameOn = false;
+                System.out.println("O has won!");
+            }
+        }
+    }
 }
