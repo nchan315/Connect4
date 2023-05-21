@@ -7,14 +7,13 @@ import model.exceptions.InvalidColumnException;
 import java.util.Scanner;
 
 public class Game {
-    private Board board = new Board();
+    private Board board = Board.getBoard();
     private boolean gameOn = true;
     private Scanner scanner = new Scanner(System.in);
 
     public Game() {
-        board.printBoard();
-
         while (gameOn) {
+            board.printBoard();
             int input1 = Integer.parseInt(scanner.nextLine()) - 1;
             try {
                 board.addPiece(input1, "X");

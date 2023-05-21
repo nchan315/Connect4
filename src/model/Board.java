@@ -8,12 +8,23 @@ import java.util.List;
 
 // Represents a 7 wide 6 high Connect 4 board
 public class Board {
+    private static Board BOARD;
     private List<String> board;
+    private String record;
 
     // EFFECTS: creates an empty board
-    public Board() {
+    private Board() {
         board = new ArrayList<>();
         fillBoard();
+        record = "";
+    }
+
+    // EFFECTS: gets the instance of the board
+    public static Board getBoard() {
+        if (BOARD == null) {
+            BOARD = new Board();
+        }
+        return BOARD;
     }
 
     // MODIFIES: this
@@ -22,6 +33,14 @@ public class Board {
         for (int i = 0; i < 42; i++) {
             board.add("*");
         }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: clears the board
+    public void clearBoard() {
+        board = new ArrayList<>();
+        fillBoard();
+        record = "";
     }
 
     // EFFECTS: prints the board in the console
@@ -35,7 +54,12 @@ public class Board {
         }
     }
 
-    // MODIFIES: this
+    // EFFECTS: returns the record
+    public String getRecord() {
+        return record;
+    }
+
+    // MODIFIES: board
     // EFFECTS: given a column, adds the piece to board if possible
     public void addPiece(int col, String piece) throws InvalidColumnException, FullColumnException {
         if (col >= 7) {
@@ -49,6 +73,7 @@ public class Board {
         int spot = (empty - 1) * 7 + col;
         board.remove(spot);
         board.add(spot, piece);
+        record = record.concat(String.valueOf(col));
     }
 
     // EFFECTS: returns the pieces in the column
