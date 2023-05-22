@@ -1,7 +1,7 @@
 package model;
 
 public abstract class Player {
-    private final String piece;
+    protected final String piece;
     protected Board board = Board.getBoard();
 
     public Player(String piece) {
@@ -9,8 +9,8 @@ public abstract class Player {
     }
 
     // MODIFIES: BOARD
-    // EFFECTS: adds the player move to the board
-    public abstract void move();
+    // EFFECTS: adds the player move to the board, returns true if move actually made
+    public abstract boolean move();
 
     // EFFECTS: returns the player piece
     public String getPiece() {

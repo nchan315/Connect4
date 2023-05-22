@@ -60,7 +60,7 @@ public class Board {
     }
 
     // EFFECTS: returns an array with columns that have empty spots
-    public List<Integer> getEmptySpots() {
+    public List<Integer> getEmptyColumns() {
         List<Integer> empties = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             List<String> column = getColumn(i);
