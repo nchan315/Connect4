@@ -10,8 +10,8 @@ public class EasyBot extends Player {
 
     SecureRandom random = new SecureRandom();
 
-    public EasyBot(String piece) {
-        super(piece);
+    public EasyBot(String piece, Board board) {
+        super(piece, board);
     }
 
     @Override

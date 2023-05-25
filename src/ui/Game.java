@@ -1,15 +1,15 @@
 package ui;
 
 import model.Board;
-import model.EasyBot;
 import model.Person;
 import model.Player;
+import model.exceptions.MediumBot;
 
 // Contains the loop that runs the game
 public class Game {
-    private Board board = Board.getBoard();
-    private Player player1 = new Person("O");
-    private Player player2 = new EasyBot("X");
+    private Board board = new Board();
+    private Player player1 = new Person("O", board);
+    private Player player2 = new MediumBot("X", board);
 
     public Game() {
         board.printBoard();
@@ -36,6 +36,11 @@ public class Game {
             validMove2 = false;
             if (board.win(player2.getPiece())) {
                 System.out.println("Player 2 has won!");
+                break;
+            }
+
+            if (board.isFull()) {
+                System.out.println("Match ends in draw");
                 break;
             }
         }

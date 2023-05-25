@@ -2,10 +2,11 @@ package model;
 
 public abstract class Player {
     protected final String piece;
-    protected Board board = Board.getBoard();
+    protected Board board;
 
-    public Player(String piece) {
+    public Player(String piece, Board board) {
         this.piece = piece;
+        this.board = board;
     }
 
     // MODIFIES: BOARD

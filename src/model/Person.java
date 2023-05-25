@@ -8,8 +8,8 @@ import java.util.Scanner;
 public class Person extends Player {
     private Scanner scanner = new Scanner(System.in);
 
-    public Person(String piece) {
-        super(piece);
+    public Person(String piece, Board board) {
+        super(piece, board);
     }
 
     @Override

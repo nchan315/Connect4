@@ -8,23 +8,42 @@ import java.util.List;
 
 // Represents a 7 wide 6 high Connect 4 board
 public class Board {
-    private static Board BOARD;
     private List<String> board;
     private String record;
 
-    // EFFECTS: creates an empty board
-    private Board() {
+    // EFFECTS: creates an empty board given no parameters
+    public Board() {
         board = new ArrayList<>();
         fillBoard();
         record = "";
     }
 
-    // EFFECTS: gets the instance of the board
-    public static Board getBoard() {
-        if (BOARD == null) {
-            BOARD = new Board();
+    // EFFECTS: creates a board given the record
+    public Board(String record) {
+        char[] array = record.toCharArray();
+        boolean player1 = true;
+        for (int i = 0; i < array.length; i++) {
+            int pos = array[i];
+            if (player1) {
+                try {
+                    addPiece(pos, "O");
+                } catch (InvalidColumnException e) {
+                    System.out.println("Code is broken in 2nd Board constructor");
+                } catch (FullColumnException e) {
+                    System.out.println("Code is broken in 2nd Board constructor");
+                }
+                player1 = false;
+            } else {
+                try {
+                    addPiece(array[i], "X");
+                } catch (InvalidColumnException e) {
+                    System.out.println("Code is broken in 2nd Board constructor");
+                } catch (FullColumnException e) {
+                    System.out.println("Code is broken in 2nd Board constructor");
+                }
+                player1 = true;
+            }
         }
-        return BOARD;
     }
 
     // MODIFIES: this
@@ -59,6 +78,11 @@ public class Board {
         return record;
     }
 
+    // EFFECTS: gets the piece at given position
+    public String getPiece(int pos) {
+        return board.get(pos);
+    }
+
     // EFFECTS: returns an array with columns that have empty spots
     public List<Integer> getEmptyColumns() {
         List<Integer> empties = new ArrayList<>();
@@ -69,6 +93,11 @@ public class Board {
             }
         }
         return empties;
+    }
+
+    // EFFECTS: returns true if board is full
+    public boolean isFull() {
+        return (!board.contains("*"));
     }
 
     // MODIFIES: board
