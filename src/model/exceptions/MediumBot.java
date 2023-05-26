@@ -17,7 +17,7 @@ public class MediumBot extends Player {
         int bestColumn = 0;
         int bestColumnScore = 0;
         for (int i = 0; i < empties.size(); i++) {
-            Board tempBoard = new Board(board.getRecord());
+            Board tempBoard = new Board(); // TODO:
             try {
                 tempBoard.addPiece(empties.get(i), piece);
             } catch (InvalidColumnException e) {

@@ -31,7 +31,22 @@ public class BoardTest {
 
     @Test
     void testOtherConstructor() {
-        // TODO: I'm scared
+        try {
+            board.addPiece(0, "O");
+            board.addPiece(0, "X");
+            board.addPiece(4, "O");
+            board.addPiece(5, "X");
+            assertEquals("0045", board.getRecord());
+            Board newBoard = board.copyBoard(board.getRecord());
+            assertEquals("O", newBoard.getPiece(35));
+            assertEquals("X", newBoard.getPiece(28));
+            assertEquals("O", newBoard.getPiece(39));
+            assertEquals("X", newBoard.getPiece(40));
+        } catch (InvalidColumnException e) {
+            fail();
+        } catch (FullColumnException e) {
+            fail();
+        }
     }
 
     @Test

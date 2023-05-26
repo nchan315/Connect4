@@ -19,14 +19,15 @@ public class Board {
     }
 
     // EFFECTS: creates a board given the record
-    public Board(String record) {
-        char[] array = record.toCharArray();
+    public Board copyBoard(String record) {
+        Board newBoard = new Board();
         boolean player1 = true;
-        for (int i = 0; i < array.length; i++) {
-            int pos = array[i];
+        for (int i = 0; i < record.length(); i++) {
+            char c = record.charAt(i);
+            int col = c - '0';
             if (player1) {
                 try {
-                    addPiece(pos, "O");
+                    newBoard.addPiece(col, "O");
                 } catch (InvalidColumnException e) {
                     System.out.println("Code is broken in 2nd Board constructor");
                 } catch (FullColumnException e) {
@@ -35,7 +36,7 @@ public class Board {
                 player1 = false;
             } else {
                 try {
-                    addPiece(array[i], "X");
+                    newBoard.addPiece(col, "X");
                 } catch (InvalidColumnException e) {
                     System.out.println("Code is broken in 2nd Board constructor");
                 } catch (FullColumnException e) {
@@ -44,6 +45,7 @@ public class Board {
                 player1 = true;
             }
         }
+        return newBoard;
     }
 
     // MODIFIES: this
@@ -117,6 +119,7 @@ public class Board {
         record = record.concat(String.valueOf(col));
     }
 
+    // REQUIRES: can only take a col <= 6
     // EFFECTS: returns the pieces in the column
     private List<String> getColumn(int col) {
         List<String> column = new ArrayList<>();
