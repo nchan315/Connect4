@@ -80,6 +80,11 @@ public class Board {
         return record;
     }
 
+    // EFFECTS: gets the current turn number
+    public int getTurns() {
+        return (record.length() + 1) / 2;
+    }
+
     // EFFECTS: gets the piece at given position
     public String getPiece(int pos) {
         return board.get(pos);
@@ -105,7 +110,7 @@ public class Board {
     // MODIFIES: board
     // EFFECTS: given a column, adds the piece to board if possible
     public void addPiece(int col, String piece) throws InvalidColumnException, FullColumnException {
-        if (col >= 7) {
+        if (col >= 7 || col < 0) {
             throw new InvalidColumnException();
         }
         List<String> column = getColumn(col);
@@ -119,7 +124,7 @@ public class Board {
         record = record.concat(String.valueOf(col));
     }
 
-    // REQUIRES: can only take a col <= 6
+    // REQUIRES: can only take a col >= 0 and <= 6
     // EFFECTS: returns the pieces in the column
     private List<String> getColumn(int col) {
         List<String> column = new ArrayList<>();

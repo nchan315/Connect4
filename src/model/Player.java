@@ -17,4 +17,9 @@ public abstract class Player {
     public String getPiece() {
         return piece;
     }
+
+    // EFFECTS: returns the opponent's piece (assuming "X" and "O")
+    public String getOpponentPiece() {
+        return (piece == "X") ? "O" : "X";
+    }
 }

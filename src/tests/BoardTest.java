@@ -50,6 +50,23 @@ public class BoardTest {
     }
 
     @Test
+    void testGetTurns() {
+        try {
+            assertEquals(0, board.getTurns());
+            board.addPiece(0, "0");
+            assertEquals(1, board.getTurns());
+            board.addPiece(0, "X");
+            assertEquals(1, board.getTurns());
+            board.addPiece(0, "O");
+            assertEquals(2, board.getTurns());
+        } catch (InvalidColumnException e) {
+            fail();
+        } catch (FullColumnException e) {
+            fail();
+        }
+    }
+
+    @Test
     void testClearBoard() {
         try {
             board.addPiece(0, "O");
@@ -71,12 +88,13 @@ public class BoardTest {
     @Test
     void getEmptyColumns() {
         List<Integer> temp = new ArrayList<>();
-        for (int i = 1; i < 7; i++) {
+        for (int i = 1; i < 6; i++) {
             temp.add(i);
         }
         try {
             for (int i = 1; i <= 6; i++) {
                 board.addPiece(0, "X");
+                board.addPiece(6, "O");
             }
         } catch (InvalidColumnException e) {
             fail();

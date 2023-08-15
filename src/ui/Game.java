@@ -1,14 +1,12 @@
 package ui;
 
-import model.Board;
-import model.Person;
-import model.Player;
-import model.exceptions.MediumBot;
+import model.*;
 
 // Contains the loop that runs the game
 public class Game {
     private Board board = new Board();
-    private Player player1 = new Person("O", board);
+    private Player player1 = new Person("O", board); // human player
+//    private Player player2 = new EasyBot("X", board); // bot players
     private Player player2 = new MediumBot("X", board);
 
     public Game() {
@@ -17,6 +15,7 @@ public class Game {
         boolean validMove2 = false;
 
         while (true) {
+            // Player 1 Move
             while (!validMove1) {                   // forces a valid move
                 if (player1.move()) {
                     validMove1 = true;
@@ -28,6 +27,7 @@ public class Game {
                 break;
             }
 
+            // Player 2 Move
             while (!validMove2) {
                 if (player2.move()) {
                     validMove2 = true;
@@ -39,6 +39,7 @@ public class Game {
                 break;
             }
 
+            // Check if draw
             if (board.isFull()) {
                 System.out.println("Match ends in draw");
                 break;
