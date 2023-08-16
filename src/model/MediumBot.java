@@ -50,7 +50,7 @@ public class MediumBot extends Player {
     }
 
     // EFFECTS: evaluates the strength of a move/board
-    private int score(Board tempBoard) {
+    public int score(Board tempBoard) {
         // board is full (no other move)
         if (tempBoard.isFull()) {
             return 0;
@@ -64,11 +64,27 @@ public class MediumBot extends Player {
             return -1000;
         }
         // give score for 'power' of board based on connections
-        int myScore = hzPower(tempBoard, piece) + vtPower(tempBoard, piece)
-                + udPower(tempBoard, piece) + ldPower(tempBoard, piece);
-        int oppScore = hzPower(tempBoard, getOpponentPiece()) + vtPower(tempBoard, getOpponentPiece())
-                + udPower(tempBoard, getOpponentPiece()) + ldPower(tempBoard, getOpponentPiece());
-        return myScore - oppScore;
+        List<Integer> myBoardCol = tempBoard.getNumPiecesCol(piece);
+        int myScore = 5 * hzPower(tempBoard, piece)         // TODO tune weights
+                + 5 * vtPower(tempBoard, piece)
+                + 5 * udPower(tempBoard, piece)
+                + 5 * ldPower(tempBoard, piece)
+                + 2 * (myBoardCol.get(0) + myBoardCol.get(6))
+                + 3 * (myBoardCol.get(1) + myBoardCol.get(5))
+                + 4 * (myBoardCol.get(2) + myBoardCol.get(4)) +
+                + 5 * (myBoardCol.get(3));
+        List<Integer> oppBoardCol = tempBoard.getNumPiecesCol(getOpponentPiece());
+        int oppScore = 4 * hzPower(tempBoard, getOpponentPiece())
+                + 4 * vtPower(tempBoard, getOpponentPiece())
+                + 4 * udPower(tempBoard, getOpponentPiece())
+                + 4 * ldPower(tempBoard, getOpponentPiece())
+                + 1 * (oppBoardCol.get(0) + oppBoardCol.get(6))
+                + 2 * (oppBoardCol.get(1) + oppBoardCol.get(5))
+                + 3 * (oppBoardCol.get(2) + oppBoardCol.get(4)) +
+                + 4 * (oppBoardCol.get(3));
+        int total = myScore - oppScore;
+//        System.out.println(total);
+        return total;
     }
 
     // EFFECTS: gives a score for board based on horizontal connections
@@ -77,7 +93,7 @@ public class MediumBot extends Player {
         for (int i = 0; i < 6; i++) {                       // all rows
             for (int j = 7 * i; j < 7 * (i+1) - 2; j++) {   // L to R
                 if (tempBoard.getPiece(j) == s && tempBoard.getPiece(j+1) == s) {
-                    hzPower += 5;                           // TODO tune value
+                    hzPower += 1;
                 }
             }
         }
@@ -90,7 +106,7 @@ public class MediumBot extends Player {
         for (int i = 0; i < 7; i++) {                       // all columns
             for (int j = 35 + i; j > 6; j -= 7) {
                 if (tempBoard.getPiece(j) == s && tempBoard.getPiece(j-7) == s) {
-                    vtPower += 5;                           // TODO tune value
+                    vtPower += 1;
                 }
             }
         }
@@ -99,16 +115,32 @@ public class MediumBot extends Player {
 
     // EFFECTS: gives a score for board based on upper diagonal connections
     private int udPower(Board tempBoard, String s) {
-        return 0;
+        int udPower = 0;
+        for (int i = 1; i < 6; i++) {                       // row
+            for (int j = 7 * i; j < 7 * (i+1) - 1; j++) {
+                if (tempBoard.getPiece(j) == s && tempBoard.getPiece(j-6) == s) {
+                    udPower += 1;
+                }
+            }
+        }
+        return udPower;
     }
 
     // EFFECTS: gives a score for board based on lower diagonal connections
     private int ldPower(Board tempBoard, String s) {
-        return 0;
+        int ldPower = 0;
+        for (int i = 1; i < 6; i++) {                       // row
+            for (int j = 7 * i + 1; j < 7 * (i+1); j++) {
+                if (tempBoard.getPiece(j) == s && tempBoard.getPiece(j-8) == s) {
+                    ldPower += 1;
+                }
+            }
+        }
+        return ldPower;
     }
 
     // EFFECTS: returns true if opponent has an immediate winning move
-    private boolean opponentCanWin(Board tempBoard) {
+    public boolean opponentCanWin(Board tempBoard) {
         List<Integer> empties = tempBoard.getEmptyColumns();
         for (int i = 0; i < empties.size(); i++) {
             int move = empties.get(i);

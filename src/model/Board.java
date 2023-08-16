@@ -106,6 +106,22 @@ public class Board {
         return empties;
     }
 
+    // EFFECTS: gets the number of pieces in a column
+    public List<Integer> getNumPiecesCol(String piece) {
+        List<Integer> numPieces = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {                   // columns
+            List<String> column = getColumn(i);
+            int num = 0;
+            for (String s : column) {
+                if (s == piece) {
+                    num++;
+                }
+            }
+            numPieces.add(num);
+        }
+        return numPieces;
+    }
+
     // EFFECTS: returns true if board is full
     public boolean isFull() {
         return (!board.contains("*"));
