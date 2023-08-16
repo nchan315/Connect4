@@ -73,6 +73,10 @@ public class Board {
             }
             System.out.println(board.get(i));
         }
+        for (int k = 1; k <= 7; k++) {
+            System.out.print(k + "   ");
+        }
+        System.out.println("");
     }
 
     // EFFECTS: returns the record

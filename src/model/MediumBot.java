@@ -64,19 +64,47 @@ public class MediumBot extends Player {
             return -1000;
         }
         // give score for 'power' of board based on connections
-        int power = 0;
-
-
-
-        return power;
+        int myScore = hzPower(tempBoard, piece) + vtPower(tempBoard, piece)
+                + udPower(tempBoard, piece) + ldPower(tempBoard, piece);
+        int oppScore = hzPower(tempBoard, getOpponentPiece()) + vtPower(tempBoard, getOpponentPiece())
+                + udPower(tempBoard, getOpponentPiece()) + ldPower(tempBoard, getOpponentPiece());
+        return myScore - oppScore;
     }
 
     // EFFECTS: gives a score for board based on horizontal connections
-    private int horizontalPower(Board tempBoard, String s) {
+    private int hzPower(Board tempBoard, String s) {
         int hzPower = 0;
-
-
+        for (int i = 0; i < 6; i++) {                       // all rows
+            for (int j = 7 * i; j < 7 * (i+1) - 2; j++) {   // L to R
+                if (tempBoard.getPiece(j) == s && tempBoard.getPiece(j+1) == s) {
+                    hzPower += 5;                           // TODO tune value
+                }
+            }
+        }
         return hzPower;
+    }
+
+    // EFFECTS: gives a score for board based on vertical connections
+    private int vtPower(Board tempBoard, String s) {
+        int vtPower = 0;
+        for (int i = 0; i < 7; i++) {                       // all columns
+            for (int j = 35 + i; j > 6; j -= 7) {
+                if (tempBoard.getPiece(j) == s && tempBoard.getPiece(j-7) == s) {
+                    vtPower += 5;                           // TODO tune value
+                }
+            }
+        }
+        return vtPower;
+    }
+
+    // EFFECTS: gives a score for board based on upper diagonal connections
+    private int udPower(Board tempBoard, String s) {
+        return 0;
+    }
+
+    // EFFECTS: gives a score for board based on lower diagonal connections
+    private int ldPower(Board tempBoard, String s) {
+        return 0;
     }
 
     // EFFECTS: returns true if opponent has an immediate winning move
