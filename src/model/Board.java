@@ -19,15 +19,14 @@ public class Board {
     }
 
     // EFFECTS: creates a board given the record
-    public Board copyBoard(String record) {
-        Board newBoard = new Board();
+    public void copyBoard(String record) {
         boolean player1 = true;
         for (int i = 0; i < record.length(); i++) {
             char c = record.charAt(i);
             int col = c - '0';
             if (player1) {
                 try {
-                    newBoard.addPiece(col, "O");
+                    this.addPiece(col, "O");
                 } catch (InvalidColumnException e) {
                     System.out.println("Code is broken in 2nd Board constructor");
                 } catch (FullColumnException e) {
@@ -36,7 +35,7 @@ public class Board {
                 player1 = false;
             } else {
                 try {
-                    newBoard.addPiece(col, "X");
+                    this.addPiece(col, "X");
                 } catch (InvalidColumnException e) {
                     System.out.println("Code is broken in 2nd Board constructor");
                 } catch (FullColumnException e) {
@@ -45,7 +44,6 @@ public class Board {
                 player1 = true;
             }
         }
-        return newBoard;
     }
 
     // MODIFIES: this
