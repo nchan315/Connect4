@@ -50,7 +50,7 @@ public class Board {
     // EFFECTS: fills the board with *
     private void fillBoard() {
         for (int i = 0; i < 42; i++) {
-            board.add("*");
+            board.add(" ");
         }
     }
 
@@ -65,12 +65,14 @@ public class Board {
     // EFFECTS: prints the board in the console
     public void printBoard() {
         for (int i = 0; i < 42; i++) {
+            System.out.print("|");
             for (int j = 0; j < 6; j++) {
                 System.out.print(board.get(i) + "   ");
                 i++;
             }
-            System.out.println(board.get(i));
+            System.out.println(board.get(i) + "|");
         }
+        System.out.print(" ");
         for (int k = 1; k <= 7; k++) {
             System.out.print(k + "   ");
         }

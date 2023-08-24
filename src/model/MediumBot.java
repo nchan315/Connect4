@@ -3,9 +3,13 @@ package model;
 import model.exceptions.FullColumnException;
 import model.exceptions.InvalidColumnException;
 
+import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MediumBot extends Player {
+
+    SecureRandom random = new SecureRandom();
 
     public MediumBot(String piece, Board board) {
         super(piece, board);
@@ -15,7 +19,7 @@ public class MediumBot extends Player {
     public boolean move() {
         // Finding a reasonably good move
         List<Integer> empties = board.getEmptyColumns();            // list of all legal moves
-        int bestColumn = 0;                                         // position of best move so far
+        List<Integer> bestColumn = new ArrayList<>();               // position of best move so far
         int bestColumnScore = -1000;                                // score of best move so far (current worst case)
         for (int i = 0; i < empties.size(); i++) {                  // iterate through possible moves
             int move = empties.get(i);
@@ -28,16 +32,23 @@ public class MediumBot extends Player {
             } catch (FullColumnException e) {
                 System.out.println("Error in MediumBoat.java");
             }
-            int tempBoardScore = score(tempBoard, move);                  // i-th board's score
+            int tempBoardScore = score(tempBoard, move);            // i-th board's score
+            if (tempBoardScore == bestColumnScore) {                // tempBoard's score = best score
+                bestColumn.add(move);
+            }
             if (tempBoardScore > bestColumnScore) {                 // update best board/score
-                bestColumn = move;
+                bestColumn = new ArrayList<>();                     // this feels terrible
+                bestColumn.add(move);
                 bestColumnScore = tempBoardScore;
             }
         }
+        // Choosing a random 'best' move from array of best moves
+        int arrSize = bestColumn.size();
+        int bestMove = bestColumn.get(random.nextInt(arrSize));
 
         // Actually doing the move
         try {
-            board.addPiece(bestColumn, piece);
+            board.addPiece(bestMove, piece);
             System.out.println("Medium Bot's Move:");
             board.printBoard();
             return true;
@@ -53,17 +64,17 @@ public class MediumBot extends Player {
     private int score(Board tempBoard, int move) {
         // board is full (no other move)
         if (tempBoard.isFull()) {
-            System.out.println("Board full\n");
+//            System.out.println("Board full\n");
             return 0;
         }
         // winning is best move
         else if (tempBoard.win(piece)) {
-            System.out.println("Win\n");
+//            System.out.println("Win\n");
             return 1000;
         }
         // opponent can win immediately
         else if (opponentCanWin(tempBoard)) {
-            System.out.println("Opponent Win\n");
+//            System.out.println("Opponent Win\n");
             return -1000;
         }
         else {
@@ -72,17 +83,9 @@ public class MediumBot extends Player {
                     + vtPowerTwo(tempBoard, piece) + vtPowerThree(tempBoard, piece)
                     + udPowerTwo(tempBoard, piece) + udPowerThree(tempBoard, piece)
                     + ldPowerTwo(tempBoard, piece) + ldPowerThree(tempBoard, piece);
-//        int oppScore = hzPowerTwo(tempBoard, getOpponentPiece()) + hzPowerThree(tempBoard, getOpponentPiece())
-//                + vtPowerTwo(tempBoard, getOpponentPiece()) + vtPowerThree(tempBoard, getOpponentPiece())
-//                + udPowerTwo(tempBoard, getOpponentPiece()) + ldPower(tempBoard, getOpponentPiece());
-            System.out.println("Calculated move\n");
+//            System.out.println("Calculated move\n");
             return myScore;
         }
-    }
-
-    // EFFECTS: returns true if move blocks opponent
-    private boolean blocksOpponent(Board tempBoard, int move) {
-        return false;
     }
 
     // EFFECTS: gives a score for board based on horizontal connections doubles
