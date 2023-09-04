@@ -7,7 +7,8 @@ public class Game {
     private Board board = new Board();
     private Player player1 = new Person("O", board); // human player
 //    private Player player2 = new EasyBot("X", board); // bot players
-    private Player player2 = new MediumBot("X", board);
+//    private Player player2 = new MediumBot("X", board);
+    private Player player2 = new HardBot("X", board);
 
     public Game() {
         board.printBoard();

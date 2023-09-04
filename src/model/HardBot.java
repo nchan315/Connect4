@@ -3,48 +3,21 @@ package model;
 import model.exceptions.FullColumnException;
 import model.exceptions.InvalidColumnException;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MediumBot extends Player {
+public class HardBot extends Player {
 
-    SecureRandom random = new SecureRandom();
+    static int DEPTH = 3;
 
-    public MediumBot(String piece, Board board) {
+    public HardBot(String piece, Board board) {
         super(piece, board);
     }
 
     @Override
     public boolean move() {
-        // Finding a reasonably good move
-        List<Integer> empties = board.getEmptyColumns();            // list of all legal moves
-        List<Integer> bestColumn = new ArrayList<>();               // position of best move so far
-        int bestColumnScore = -1000;                                // score of best move so far (current worst case)
-        for (int i = 0; i < empties.size(); i++) {                  // iterate through possible moves
-            int move = empties.get(i);
-            Board tempBoard = new Board();
-            try {
-                tempBoard.copyBoard(board.getRecord());
-                tempBoard.addPiece(move, piece);
-            } catch (InvalidColumnException e) {
-                System.out.println("Error in MediumBoat.java");
-            } catch (FullColumnException e) {
-                System.out.println("Error in MediumBoat.java");
-            }
-            int tempBoardScore = score(tempBoard, move);            // i-th board's score
-            if (tempBoardScore == bestColumnScore) {                // tempBoard's score = best score
-                bestColumn.add(move);
-            }
-            if (tempBoardScore > bestColumnScore) {                 // update best board/score
-                bestColumn = new ArrayList<>();                     // this feels terrible
-                bestColumn.add(move);
-                bestColumnScore = tempBoardScore;
-            }
-        }
-        // Choosing a random 'best' move from array of best moves
-        int arrSize = bestColumn.size();
-        int bestMove = bestColumn.get(random.nextInt(arrSize));
+        // Find best move after DEPTH moves
+        int bestMove = minimax(0, true, board.getRecord());
 
         // Actually doing the move
         try {
@@ -53,28 +26,66 @@ public class MediumBot extends Player {
             board.printBoard();
             return true;
         } catch (InvalidColumnException e) {
-            System.out.println("Not a valid column (MediumBot)");
+            System.out.println("Not a valid column (HardBot)");
         } catch (FullColumnException e) {
-            System.out.println("Column already full (MediumBot)");
+            System.out.println("Column already full (HardBot)");
         }
         return false;
     }
 
+    // minimax algorithm to return best move
+    int minimax(int depth, boolean isMax, String record) {
+        Board tempBoard = new Board();
+        tempBoard.copyBoard(record);
+        // reach bottom and evaluate (base case)
+        if (depth == DEPTH) {
+            return score(tempBoard);
+        }
+        // all possible moves
+        List<Integer> emptyColumns = tempBoard.getEmptyColumns();
+        List<String>  allRecords = new ArrayList<>();
+        for (int i = 0; i < emptyColumns.size(); i++) {
+            String copyRecord = record;
+            allRecords.add(copyRecord.concat(String.valueOf(emptyColumns.get(i))));
+        }
+        List<Integer> scores = new ArrayList<>();
+        for (int i = 0; i < emptyColumns.size(); i++) {
+            scores.add(minimax(depth + 1, !isMax, allRecords.get(i)));
+        }
+        // maximizing move
+        if (isMax) {
+            int bestMoveIndex = 0;
+            for (int i = 1; i < emptyColumns.size(); i++) {
+                if (scores.get(bestMoveIndex) <= scores.get(i)) {
+                    bestMoveIndex = i;
+                }
+            }
+            return emptyColumns.get(bestMoveIndex);
+        }
+        // minimizing move
+        else {
+            int bestMoveIndex = 0;
+            for (int i = 1; i < emptyColumns.size(); i++) {
+                if (scores.get(bestMoveIndex) > scores.get(i)) {
+                    bestMoveIndex = i;
+                }
+            }
+            return emptyColumns.get(bestMoveIndex);
+        }
+    }
+
     // EFFECTS: evaluates the strength of a move/board
-    private int score(Board tempBoard, int move) {
+    private int score(Board tempBoard) {
         // board is full (no other move)
         if (tempBoard.isFull()) {
-//            System.out.println("Board full\n");
             return 0;
         }
         // winning is best move
         else if (tempBoard.win(piece)) {
-//            System.out.println("Win\n");
             return 1000;
         }
         // opponent can win immediately
         else if (opponentCanWin(tempBoard)) {
-//            System.out.println("Opponent Win\n");
             return -1000;
         }
         else {
@@ -83,8 +94,11 @@ public class MediumBot extends Player {
                     + vtPowerTwo(tempBoard, piece) + vtPowerThree(tempBoard, piece)
                     + udPowerTwo(tempBoard, piece) + udPowerThree(tempBoard, piece)
                     + ldPowerTwo(tempBoard, piece) + ldPowerThree(tempBoard, piece);
-//            System.out.println("Calculated move\n");
-            return myScore;
+            int oppScore = hzPowerTwo(tempBoard, getOpponentPiece()) + hzPowerThree(tempBoard, getOpponentPiece())
+                    + vtPowerTwo(tempBoard, getOpponentPiece()) + vtPowerThree(tempBoard, getOpponentPiece())
+                    + udPowerTwo(tempBoard, getOpponentPiece()) + udPowerThree(tempBoard, getOpponentPiece())
+                    + ldPowerTwo(tempBoard, getOpponentPiece()) + ldPowerThree(tempBoard, getOpponentPiece());
+            return myScore - oppScore;
         }
     }
 
@@ -205,7 +219,6 @@ public class MediumBot extends Player {
             Board tempBoard2 = new Board();
             try {
                 tempBoard2.copyBoard(tempBoard.getRecord());                // make a copy of tempBoard
-//                System.out.println(tempBoard2.getRecord() + "\n");
                 tempBoard2.addPiece(move, getOpponentPiece());
             } catch (Exception e) {
                 System.out.println("Medium bot - opponentCanWin broken");

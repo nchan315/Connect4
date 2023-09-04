@@ -20,6 +20,7 @@ public class Board {
 
     // EFFECTS: creates a board given the record
     public void copyBoard(String record) {
+        clearBoard();
         boolean player1 = true;
         for (int i = 0; i < record.length(); i++) {
             char c = record.charAt(i);
@@ -47,7 +48,7 @@ public class Board {
     }
 
     // MODIFIES: this
-    // EFFECTS: fills the board with *
+    // EFFECTS: fills the board with spaces
     private void fillBoard() {
         for (int i = 0; i < 42; i++) {
             board.add(" ");
@@ -99,7 +100,7 @@ public class Board {
         List<Integer> empties = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             List<String> column = getColumn(i);
-            if (column.contains("*")) {
+            if (column.contains(" ")) {
                 empties.add(i);
             }
         }
@@ -108,7 +109,7 @@ public class Board {
 
     // EFFECTS: returns true if board is full
     public boolean isFull() {
-        return (!board.contains("*"));
+        return (!board.contains(" "));
     }
 
     // MODIFIES: board
@@ -118,7 +119,7 @@ public class Board {
             throw new InvalidColumnException();
         }
         List<String> column = getColumn(col);
-        if (!column.contains("*")) {
+        if (!column.contains(" ")) {
             throw new FullColumnException();
         }
         int empty = getEmptySpots(column);
@@ -151,7 +152,7 @@ public class Board {
     private int getEmptySpots(List<String> column) {
         int empty = 0;
         for (String s : column) {
-            if (s.equals("*")) {
+            if (s.equals(" ")) {
                 empty++;
             }
         }
