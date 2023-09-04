@@ -19,15 +19,15 @@ public class Board {
     }
 
     // EFFECTS: creates a board given the record
-    public Board copyBoard(String record) {
-        Board newBoard = new Board();
+    public void copyBoard(String record) {
+        clearBoard();
         boolean player1 = true;
         for (int i = 0; i < record.length(); i++) {
             char c = record.charAt(i);
             int col = c - '0';
             if (player1) {
                 try {
-                    newBoard.addPiece(col, "O");
+                    this.addPiece(col, "O");
                 } catch (InvalidColumnException e) {
                     System.out.println("Code is broken in 2nd Board constructor");
                 } catch (FullColumnException e) {
@@ -36,7 +36,7 @@ public class Board {
                 player1 = false;
             } else {
                 try {
-                    newBoard.addPiece(col, "X");
+                    this.addPiece(col, "X");
                 } catch (InvalidColumnException e) {
                     System.out.println("Code is broken in 2nd Board constructor");
                 } catch (FullColumnException e) {
@@ -45,14 +45,13 @@ public class Board {
                 player1 = true;
             }
         }
-        return newBoard;
     }
 
     // MODIFIES: this
-    // EFFECTS: fills the board with *
+    // EFFECTS: fills the board with spaces
     private void fillBoard() {
         for (int i = 0; i < 42; i++) {
-            board.add("*");
+            board.add(" ");
         }
     }
 
@@ -67,12 +66,14 @@ public class Board {
     // EFFECTS: prints the board in the console
     public void printBoard() {
         for (int i = 0; i < 42; i++) {
+            System.out.print("|");
             for (int j = 0; j < 6; j++) {
                 System.out.print(board.get(i) + "   ");
                 i++;
             }
-            System.out.println(board.get(i));
+            System.out.println(board.get(i) + "|");
         }
+        System.out.print(" ");
         for (int k = 1; k <= 7; k++) {
             System.out.print(k + "   ");
         }
@@ -99,7 +100,7 @@ public class Board {
         List<Integer> empties = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             List<String> column = getColumn(i);
-            if (column.contains("*")) {
+            if (column.contains(" ")) {
                 empties.add(i);
             }
         }
@@ -124,7 +125,7 @@ public class Board {
 
     // EFFECTS: returns true if board is full
     public boolean isFull() {
-        return (!board.contains("*"));
+        return (!board.contains(" "));
     }
 
     // MODIFIES: board
@@ -134,7 +135,7 @@ public class Board {
             throw new InvalidColumnException();
         }
         List<String> column = getColumn(col);
-        if (!column.contains("*")) {
+        if (!column.contains(" ")) {
             throw new FullColumnException();
         }
         int empty = getEmptySpots(column);
@@ -167,7 +168,7 @@ public class Board {
     private int getEmptySpots(List<String> column) {
         int empty = 0;
         for (String s : column) {
-            if (s.equals("*")) {
+            if (s.equals(" ")) {
                 empty++;
             }
         }

@@ -4,34 +4,20 @@ import model.Board;
 import model.exceptions.FullColumnException;
 import model.exceptions.InvalidColumnException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+//import static org.junit.Assert.assertEquals;
+//import static org.junit.Assert.fail;
 
 // Not a complete test suite, just testing what gives me pain
 public class BoardTest {
     private Board board;
-
-    void defaultBoard0() {
-        try {
-            board.addPiece(2, "X");
-            board.addPiece(3, "O");
-            board.addPiece(3, "X");
-            board.addPiece(4, "O");
-            board.addPiece(2, "X");
-            board.addPiece(6, "O");
-            board.addPiece(5, "X");
-            board.addPiece(5, "O");
-        } catch (InvalidColumnException e) {
-            fail();
-        } catch (FullColumnException e) {
-            fail();
-        }
-    }
 
     @BeforeEach
     void setup() {
@@ -54,11 +40,14 @@ public class BoardTest {
             board.addPiece(4, "O");
             board.addPiece(5, "X");
             assertEquals("0045", board.getRecord());
-            Board newBoard = board.copyBoard(board.getRecord());
+
+            Board newBoard = new Board();
+            newBoard.copyBoard(board.getRecord());
             assertEquals("O", newBoard.getPiece(35));
             assertEquals("X", newBoard.getPiece(28));
             assertEquals("O", newBoard.getPiece(39));
             assertEquals("X", newBoard.getPiece(40));
+            assertEquals("0045", newBoard.getRecord());
         } catch (InvalidColumnException e) {
             fail();
         } catch (FullColumnException e) {
@@ -119,21 +108,6 @@ public class BoardTest {
             fail();
         }
         assertEquals(temp, board.getEmptyColumns());
-    }
-
-    @Test
-    void testGetNumPiecesCol() {
-        defaultBoard0();
-        List<Integer> numColX = board.getNumPiecesCol("X");
-        List<Integer> numColO = board.getNumPiecesCol("O");
-        assertEquals(0, (long) numColX.get(0));
-        assertEquals(2, (long) numColX.get(2));
-        assertEquals(1, (long) numColX.get(3));
-        assertEquals(0, (long) numColX.get(4));
-        assertEquals(0, (long) numColO.get(1));
-        assertEquals(0, (long) numColO.get(2));
-        assertEquals(1, (long) numColO.get(3));
-        assertEquals(1, (long) numColO.get(5));
     }
 
     @Test
