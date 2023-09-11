@@ -6,9 +6,12 @@ import model.exceptions.InvalidColumnException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Math.max;
+
 public class HardBot extends Player {
 
-    static int DEPTH = 3;
+    static int DEPTH = 5;
+    static List<Integer> SCORES;
 
     public HardBot(String piece, Board board) {
         super(piece, board);
@@ -16,8 +19,10 @@ public class HardBot extends Player {
 
     @Override
     public boolean move() {
+        // All scores after DEPTH moves
+        SCORES = getScores(board.getRecord(), 0, DEPTH);
         // Find best move after DEPTH moves
-        int bestMove = minimax(0, true, board.getRecord());
+        int bestMove = minimax(0, 0, true);
 
         // Actually doing the move
         try {
@@ -33,49 +38,57 @@ public class HardBot extends Player {
         return false;
     }
 
-    // minimax algorithm to return best move
-    int minimax(int depth, boolean isMax, String record) {
+    // gets scores from all possible boards after DEPTH moves
+    public List<Integer> getScores(String record, int depth, int maxDepth) {
         Board tempBoard = new Board();
         tempBoard.copyBoard(record);
-        // reach bottom and evaluate (base case)
+        List<Integer> listScores = new ArrayList<>();
+
+        // base case
+        if (depth == maxDepth) {
+            listScores.add(score(tempBoard));
+            return listScores;
+        }
+
+        for (int i = 0; i < 7; i++) {
+            String s = record;
+            String recordCopy = s.concat(String.valueOf(i));
+            List<Integer> tempScore = getScores(recordCopy, depth + 1, maxDepth);
+            listScores.addAll(tempScore);
+        }
+        return listScores;
+    }
+
+    // minimax algorithm to return best move
+    private int minimax(int depth, int nodeIndex, boolean isMax) {
+        // base case
         if (depth == DEPTH) {
-            return score(tempBoard);
+            return SCORES.get(nodeIndex);
         }
-        // all possible moves
-        List<Integer> emptyColumns = tempBoard.getEmptyColumns();
-        List<String>  allRecords = new ArrayList<>();
-        for (int i = 0; i < emptyColumns.size(); i++) {
-            String copyRecord = record;
-            allRecords.add(copyRecord.concat(String.valueOf(emptyColumns.get(i))));
-        }
-        List<Integer> scores = new ArrayList<>();
-        for (int i = 0; i < emptyColumns.size(); i++) {
-            scores.add(minimax(depth + 1, !isMax, allRecords.get(i)));
-        }
+
         // maximizing move
         if (isMax) {
-            int bestMoveIndex = 0;
-            for (int i = 1; i < emptyColumns.size(); i++) {
-                if (scores.get(bestMoveIndex) <= scores.get(i)) {
-                    bestMoveIndex = i;
-                }
-            }
-            return emptyColumns.get(bestMoveIndex);
+            int maxMove = findMax(minimax(depth+1, 7*nodeIndex, false),
+                    minimax(depth+1, 7*nodeIndex+1, false),
+                    minimax(depth+1, 7*nodeIndex+2, false),
+                    minimax(depth+1, 7*nodeIndex+3, false),
+                    minimax(depth+1, 7*nodeIndex+4, false),
+                    minimax(depth+1, 7*nodeIndex+5, false),
+                    minimax(depth+1, 7*nodeIndex+6, false));
         }
+
         // minimizing move
         else {
-            int bestMoveIndex = 0;
-            for (int i = 1; i < emptyColumns.size(); i++) {
-                if (scores.get(bestMoveIndex) > scores.get(i)) {
-                    bestMoveIndex = i;
-                }
-            }
-            return emptyColumns.get(bestMoveIndex);
+            int minMove =
         }
     }
 
+    int findMax(int a, int b, int c, int d, int e, int f, int g) {
+        max(a, b, c);
+    }
+
     // EFFECTS: evaluates the strength of a move/board
-    private int score(Board tempBoard) {
+    public int score(Board tempBoard) {
         // board is full (no other move)
         if (tempBoard.isFull()) {
             return 0;

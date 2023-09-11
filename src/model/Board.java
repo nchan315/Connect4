@@ -29,18 +29,18 @@ public class Board {
                 try {
                     this.addPiece(col, "O");
                 } catch (InvalidColumnException e) {
-                    System.out.println("Code is broken in 2nd Board constructor");
+                    System.out.println("Code is broken in 2nd Board constructor 1");
                 } catch (FullColumnException e) {
-                    System.out.println("Code is broken in 2nd Board constructor");
+                    System.out.println("Code is broken in 2nd Board constructor 2");
                 }
                 player1 = false;
             } else {
                 try {
                     this.addPiece(col, "X");
                 } catch (InvalidColumnException e) {
-                    System.out.println("Code is broken in 2nd Board constructor");
+                    System.out.println("Code is broken in 2nd Board constructor 3");
                 } catch (FullColumnException e) {
-                    System.out.println("Code is broken in 2nd Board constructor");
+                    System.out.println("Code is broken in 2nd Board constructor 4");
                 }
                 player1 = true;
             }
