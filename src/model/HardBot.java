@@ -3,15 +3,17 @@ package model;
 import model.exceptions.FullColumnException;
 import model.exceptions.InvalidColumnException;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.max;
+import static java.lang.Math.*;
 
 public class HardBot extends Player {
 
     static int DEPTH = 5;
     static List<Integer> SCORES;
+    private SecureRandom random = new SecureRandom();
 
     public HardBot(String piece, Board board) {
         super(piece, board);
@@ -22,12 +24,13 @@ public class HardBot extends Player {
         // All scores after DEPTH moves
         SCORES = getScores(board.getRecord(), 0, DEPTH);
         // Find best move after DEPTH moves
-        int bestMove = minimax(0, 0, true);
+        int bestMove = bestMove();
+        System.out.println(bestMove);
 
         // Actually doing the move
         try {
             board.addPiece(bestMove, piece);
-            System.out.println("Medium Bot's Move:");
+            System.out.println("Hard Bot's Move:");
             board.printBoard();
             return true;
         } catch (InvalidColumnException e) {
@@ -36,6 +39,25 @@ public class HardBot extends Player {
             System.out.println("Column already full (HardBot)");
         }
         return false;
+    }
+
+    // initial call to minimax, stops invalid moves
+    public int bestMove() {
+        List<Integer> bestMoves = new ArrayList<>();
+        bestMoves.add(0);
+        int bestScore = -1000;
+
+        for (int i = 0; i < 7; i++) {
+            int score = minimax(1, i, false);
+            if (score == bestScore && board.hasSpace(i)) {
+                bestMoves.add(i);
+            } else if (score > bestScore && board.hasSpace(i)) {
+                bestMoves = new ArrayList<>();
+                bestMoves.add(i);
+                bestScore = score;
+            }
+        }
+        return bestMoves.get(random.nextInt(bestMoves.size()));
     }
 
     // gets scores from all possible boards after DEPTH moves
@@ -68,7 +90,7 @@ public class HardBot extends Player {
 
         // maximizing move
         if (isMax) {
-            int maxMove = findMax(minimax(depth+1, 7*nodeIndex, false),
+             return findMax(minimax(depth+1, 7*nodeIndex, false),
                     minimax(depth+1, 7*nodeIndex+1, false),
                     minimax(depth+1, 7*nodeIndex+2, false),
                     minimax(depth+1, 7*nodeIndex+3, false),
@@ -79,27 +101,37 @@ public class HardBot extends Player {
 
         // minimizing move
         else {
-            int minMove =
+            return findMin(minimax(depth+1, 7*nodeIndex, true),
+                    minimax(depth+1, 7*nodeIndex+1, true),
+                    minimax(depth+1, 7*nodeIndex+2, true),
+                    minimax(depth+1, 7*nodeIndex+3, true),
+                    minimax(depth+1, 7*nodeIndex+4, true),
+                    minimax(depth+1, 7*nodeIndex+5, true),
+                    minimax(depth+1, 7*nodeIndex+6, true));
         }
     }
 
     int findMax(int a, int b, int c, int d, int e, int f, int g) {
-        max(a, b, c);
+        return max(a, max(b, max(c, max(d, max(e, max(f, g))))));
+    }
+
+    int findMin(int a, int b, int c, int d, int e, int f, int g) {
+        return min(a, min(b, min(c, min(d, min(e, min(f, g))))));
     }
 
     // EFFECTS: evaluates the strength of a move/board
     public int score(Board tempBoard) {
         // board is full (no other move)
-        if (tempBoard.isFull()) {
-            return 0;
+//        if (tempBoard.isFull()) {
+//            return 0;
+//        }
+        // opponent has won
+        if (tempBoard.win(getOpponentPiece())) {
+            return -1000;
         }
-        // winning is best move
+        // hard bot has won
         else if (tempBoard.win(piece)) {
             return 1000;
-        }
-        // opponent can win immediately
-        else if (opponentCanWin(tempBoard)) {
-            return -1000;
         }
         else {
             // give score for 'power' of board based on connections and winning possibilities

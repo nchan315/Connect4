@@ -1,1 +1,0 @@
-This is based on a tutorial at http://blog.gamesolver.org
